@@ -1,24 +1,24 @@
-const http = require('http');
-
+// add bodyparser
+const bodyparser = require('body-parser');
 // add express
 const express = require('express');
-
+// define your app
 const app = express();
+//import your routes
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-// handle middlewares
-app.use('/add-product', (request, response, next) => {
-	console.log('in another middleware');
-	// send allows us to send a response back
-	response.send('<h1>The add product page</h1>');
+// pass request body parsing
+app.use(bodyparser.urlencoded({ extended: false }));
+
+// use your imported routes inside your main app
+app.use('/admin', adminRoutes); // for admin related actions
+app.use(shopRoutes);
+
+// if you want to catch all other routes
+app.use((request, response, next) => {
+	// so that it goes to the next middleware
+	response.status(404).send('<h1>Page not found </h1>');
 });
-
-app.use('/', (request, response, next) => {
-	console.log('in the middleware');
-	// next allows us to move to the next middleware in line
-	response.send('<h1>The default index</h1>');
-});
-
-// const server = http.createServer(app);
-
 // server.listen(3000);
-app.listen(3000);
+app.listen(3333);
